@@ -30,6 +30,19 @@ install_parmetis () {
     pm_build_dir=$2
     pm_inc_dir=$3
     pm_lib_dir=$4
+
+    #check whether mpicc is available
+    f=$dir/Makefile
+    if grep -Fxq "cc         = mpicc" $f
+    then
+        mpicc -v
+        if [ $? -ne 0 ]; then
+            echo "the ParMetis's default MPI compiler, mpicc, is not available"
+            echo "Please update the compiler in line 11 and 12 of '$f' to the available one"
+            exit 1
+        fi
+    fi
+
     if [ ! -d $pm_build_dir ]; then
         mkdir -p $pm_build_dir
     fi
